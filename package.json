@@ -23,9 +23,8 @@
     "@types/node": "^12.7.2",
     "abi-decoder": "^2.2.0",
     "bignumber.js": "^9.0.0",
-    "chain3": "^0.1.20",
-    "lodash": "^4.17.15",
-    "lodash.isarray": "^4.0.0"
+    "chain3": "^0.1.19",
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
