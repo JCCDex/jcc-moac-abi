@@ -30,6 +30,7 @@
         ]
       }
     ],
+    "no-string-literal": false,
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
     "space-before-function-paren": [true, {
       "anonymous": "always",
