@@ -85,6 +85,11 @@ export default class MoacABI {
         const decodedData = abiDecoder.decodeMethod(data);
         return decodedData;
     }
+
+    public destroy() {
+        abiDecoder.getABIs().length = 0;
+        abiDecoder.getMethodIDs().length = 0;
+    }
 }
 
 export { MoacABI };
