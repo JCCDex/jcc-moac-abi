@@ -49,7 +49,7 @@ export default class MoacABI {
     /**
      * encode the input value by function name
      *
-     * @param {string} name defined fuction name in the abi
+     * @param {string} name defined function name in the abi
      * @param {*} args parameters according to the defined inputs
      * @returns {string}
      * @memberof MoacABI
@@ -67,6 +67,11 @@ export default class MoacABI {
         if (!abi) {
             throw new Error("Invalid number of arguments to Solidity function");
         }
+
+        /**
+         * detail: https://github.com/MOACChain/chain3/blob/master/lib/chain3/function.js#L282
+         *
+         */
         const typename = abi.inputs.map((input) => input.type).join(",");
         return method[typename].getData.apply(null, args);
     }
