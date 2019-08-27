@@ -6,14 +6,20 @@ const expect = require("chai").expect;
 
 describe("test abi", function() {
 
+
+  describe("test constructor", function() {
+    it("throw error if input value is invalid", function() {
+      expect(() => new MoacABI()).throw("The input value isn't a contract instance");
+    })
+  })
+
   describe("test erc20 abi", function() {
 
-
-    const chain3 = new Chain3(new Chain3.providers.HttpProvider("https://moac1ma17f1.jccdex.cn"));
-    const contract = chain3.mc.contract(erc20ABI).at("0x1b9bae18532eeb8cd4316a20678a0c43f28f0ae2");
-    const inst = new MoacABI(contract);
-
     describe("test encode & decode", function() {
+
+      const chain3 = new Chain3(new Chain3.providers.HttpProvider("https://moac1ma17f1.jccdex.cn"));
+      const contract = chain3.mc.contract(erc20ABI).at("0x1b9bae18532eeb8cd4316a20678a0c43f28f0ae2");
+      const inst = new MoacABI(contract);
 
       this.afterAll(() => {
         inst.destroy()
@@ -83,15 +89,20 @@ describe("test abi", function() {
           ]
         })
       })
+
+      it("throw error if doesn't contain function", function() {
+        expect(() => inst.encode("test")).throw('The contract doesn\'t contain "test" function');
+      })
     })
   })
 
   describe("test abi of erc721", function() {
-    const chain3 = new Chain3(new Chain3.providers.HttpProvider("https://moac1ma17f1.jccdex.cn"));
-    const contract = chain3.mc.contract(erc721ABI).at("0x1b9bae18532eeb8cd4316a20678a0c43f28f0ae2");
-    const inst = new MoacABI(contract);
 
     describe("test encode & decode", function() {
+
+      const chain3 = new Chain3(new Chain3.providers.HttpProvider("https://moac1ma17f1.jccdex.cn"));
+      const contract = chain3.mc.contract(erc721ABI).at("0x1b9bae18532eeb8cd4316a20678a0c43f28f0ae2");
+      const inst = new MoacABI(contract);
 
       this.afterAll(() => {
         inst.destroy()
@@ -253,6 +264,10 @@ describe("test abi", function() {
             }
           ]
         })
+      })
+
+      it("throw error if number of arguments is invalid", function() {
+        expect(() => inst.encode("safeTransferFrom", "0x533243557dfdc87ae5bda885e22db00f87499971", true)).throw('Invalid number of arguments to Solidity function');
       })
 
     })
