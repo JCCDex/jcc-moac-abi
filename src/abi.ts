@@ -35,7 +35,7 @@ export default class MoacABI {
     /**
      * Creates an instance of MoacABI.
      * @todo if [pr](https://github.com/MOACChain/chain3/pull/14) and released, should use `contract instanceof Contract` to check input value if valid.
-     * @param {*} contract
+     * @param {*} contract moac contract instance
      * @memberof MoacABI
      */
     constructor(contract: any) {
@@ -173,6 +173,11 @@ export default class MoacABI {
         });
     }
 
+    /**
+     * destroy abis and methodIDs of abiDecoder
+     *
+     * @memberof MoacABI
+     */
     public destroy() {
         abiDecoder.getABIs().length = 0;
         abiDecoder.getMethodIDs().length = 0;
