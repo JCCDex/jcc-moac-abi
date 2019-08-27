@@ -80,7 +80,7 @@ export default class MoacABI {
         }
 
         if (decodedData.includes("NaN")) {
-            throw new Error('The decoded data contains "NaN", please check the input arguments');
+            throw new Error('The encoded data contains "NaN", please check the input arguments');
         }
         return decodedData;
     }

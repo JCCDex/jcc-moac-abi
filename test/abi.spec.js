@@ -103,8 +103,29 @@ describe("test abi", function() {
           transactionIndex: 1
         }];
 
+        inst.destroy();
         const decodedLogs = inst.decodeLogs(logs);
         expect(decodedLogs).to.deep.equal([{
+          "name": "Transfer",
+          "events": [{
+              "name": "_from",
+              "type": "address",
+              "value": "0x687f6ab056708fcfd34b3226c0b70ddf95b2eab2"
+            },
+            {
+              "name": "_to",
+              "type": "address",
+              "value": "0x66c9b619215db959ec137ede6b96f3fa6fd35a8a"
+            },
+            {
+              "name": "_value",
+              "type": "uint256",
+              "value": "6990000000000000000000"
+            }
+          ],
+          "address": "0x4c6007cea426e543551f2cb6392e6d6768f74706"
+        }]);
+        expect(inst.decodeLogs(logs)).to.deep.equal([{
           "name": "Transfer",
           "events": [{
               "name": "_from",
@@ -131,7 +152,7 @@ describe("test abi", function() {
       })
 
       it("throw error if decoded data contains 'NaN'", function() {
-        expect(() => inst.encode("transfer", "533243557dfdc87ae5bda885e22db00f87499971", "30000000000000000")).throw('The decoded data contains "NaN", please check the input arguments');
+        expect(() => inst.encode("transfer", "533243557dfdc87ae5bda885e22db00f87499971", "30000000000000000")).throw('The encoded data contains "NaN", please check the input arguments');
       })
     })
   })
