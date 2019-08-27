@@ -4,7 +4,7 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPl
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const config = {
-  entry: "./lib",
+  entry: "./lib/abi",
   output: {
     filename: "jcc-moac-abi.min.js",
     path: path.resolve(__dirname, "./dist"),
@@ -16,8 +16,8 @@ const config = {
     extensions: [".js", ".ts"],
     alias: {
       "bn.js": path.resolve(__dirname, "node_modules/bn.js"),
-      "bignumber.js": path.resolve(__dirname, "node_modules/bignumber.js"),
-      "base-x": path.resolve(__dirname, "node_modules/base-x")
+      "inherits": path.resolve(__dirname, "node_modules/inherits"),
+      "utf8": path.resolve(__dirname, "node_modules/utf8")
     }
   },
   mode: process.env.MODE === "dev" ? 'development' : "production",

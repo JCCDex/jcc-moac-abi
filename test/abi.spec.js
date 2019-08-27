@@ -90,8 +90,48 @@ describe("test abi", function() {
         })
       })
 
+      it("test Tansfer event", function() {
+        const logs = [{
+          TxData: "0x00000000000000000000000000000000000000000000017aedbc9d648c780000",
+          address: "0x4c6007cea426e543551f2cb6392e6d6768f74706",
+          blockHash: "0x181c92ab726131010021473d6e444d2f682e013eb12b2d4faa0946a8847c56f1",
+          blockNumber: 3175749,
+          logIndex: 0,
+          removed: false,
+          topics: ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", "0x000000000000000000000000687f6ab056708fcfd34b3226c0b70ddf95b2eab2", "0x00000000000000000000000066c9b619215db959ec137ede6b96f3fa6fd35a8a"],
+          transactionHash: "0x9a7da10a30ad4c8e1bb4461107497130a19f53a844069dd3e019557ee1a423b8",
+          transactionIndex: 1
+        }];
+
+        const decodedLogs = inst.decodeLogs(logs);
+        expect(decodedLogs).to.deep.equal([{
+          "name": "Transfer",
+          "events": [{
+              "name": "_from",
+              "type": "address",
+              "value": "0x687f6ab056708fcfd34b3226c0b70ddf95b2eab2"
+            },
+            {
+              "name": "_to",
+              "type": "address",
+              "value": "0x66c9b619215db959ec137ede6b96f3fa6fd35a8a"
+            },
+            {
+              "name": "_value",
+              "type": "uint256",
+              "value": "6990000000000000000000"
+            }
+          ],
+          "address": "0x4c6007cea426e543551f2cb6392e6d6768f74706"
+        }]);
+      })
+
       it("throw error if doesn't contain function", function() {
         expect(() => inst.encode("test")).throw('The contract doesn\'t contain "test" function');
+      })
+
+      it("throw error if decoded data contains 'NaN'", function() {
+        expect(() => inst.encode("transfer", "533243557dfdc87ae5bda885e22db00f87499971", "30000000000000000")).throw('The decoded data contains "NaN", please check the input arguments');
       })
     })
   })

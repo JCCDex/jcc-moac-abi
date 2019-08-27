@@ -1,8 +1,10 @@
 import abiDecoder = require("abi-decoder");
-import * as mc from "chain3/lib/chain3/methods/mc";
 import isArray = require("lodash/isArray");
 import isFunction = require("lodash/isFunction");
 import isObject = require("lodash/isObject");
+import abiCoder = require("web3-eth-abi");
+import { BN } from "web3-utils";
+import { IDecodedLogs, ILogs } from "./model";
 
 /**
  * decoder and encoder for moac
@@ -38,7 +40,7 @@ export default class MoacABI {
      */
     constructor(contract: any) {
 
-        if (isObject(contract) && (contract["_mc"] instanceof mc) && isArray(contract["abi"])) {
+        if (isObject(contract) && isArray(contract["abi"])) {
             this._contract = contract;
             this._abi = contract["abi"];
         } else {
@@ -60,20 +62,27 @@ export default class MoacABI {
             throw new Error(`The contract doesn't contain "${name}" function`);
         }
         const filterABIs = this._abi.filter((item) => item.name === name);
+        let decodedData: string;
         if (filterABIs.length === 1) {
-            return method["getData"].apply(null, args);
-        }
-        const abi = filterABIs.find((item) => item.inputs.length === args.length);
-        if (!abi) {
-            throw new Error("Invalid number of arguments to Solidity function");
+            decodedData = method["getData"].apply(null, args);
+        } else {
+            const abi = filterABIs.find((item) => item.inputs.length === args.length);
+            if (!abi) {
+                throw new Error("Invalid number of arguments to Solidity function");
+            }
+
+            /**
+             * detail: https://github.com/MOACChain/chain3/blob/master/lib/chain3/function.js#L282
+             *
+             */
+            const typename = abi.inputs.map((input) => input.type).join(",");
+            decodedData = method[typename].getData.apply(null, args);
         }
 
-        /**
-         * detail: https://github.com/MOACChain/chain3/blob/master/lib/chain3/function.js#L282
-         *
-         */
-        const typename = abi.inputs.map((input) => input.type).join(",");
-        return method[typename].getData.apply(null, args);
+        if (decodedData.includes("NaN")) {
+            throw new Error('The decoded data contains "NaN", please check the input arguments');
+        }
+        return decodedData;
     }
 
     /**
@@ -89,6 +98,79 @@ export default class MoacABI {
         }
         const decodedData = abiDecoder.decodeMethod(data);
         return decodedData;
+    }
+
+    /**
+     * decode moac transaction logs
+     *
+     * [Reference](https://github.com/ConsenSys/abi-decoder/blob/master/index.js#L130)
+     *
+     * @param {ILogs} logs
+     * @returns {IDecodedLogs}
+     * @memberof MoacABI
+     */
+    public decodeLogs(logs: ILogs): IDecodedLogs {
+        if (abiDecoder.getABIs().length === 0) {
+            abiDecoder.addABI(this._abi);
+        }
+        return logs.filter((log) => log.topics.length > 0).map((logItem) => {
+            const methodID = logItem.topics[0].slice(2);
+            const method = abiDecoder.getMethodIDs()[methodID];
+            if (method) {
+                const logData = logItem.TxData;
+                const decodedParams = [];
+                let dataIndex = 0;
+                let topicsIndex = 1;
+
+                const dataTypes = [];
+                method.inputs.map((input) => {
+                    if (!input.indexed) {
+                        dataTypes.push(input.type);
+                    }
+                });
+
+                const decodedData = abiCoder.decodeParameters(dataTypes, logData.slice(2));
+
+                // Loop topic and data to get the params
+                method.inputs.map((param) => {
+                    const decodedP: any = {
+                        name: param.name,
+                        type: param.type,
+                    };
+
+                    if (param.indexed) {
+                        decodedP.value = logItem.topics[topicsIndex];
+                        topicsIndex++;
+                    } else {
+                        decodedP.value = decodedData[dataIndex];
+                        dataIndex++;
+                    }
+
+                    if (param.type === "address") {
+                        decodedP.value = decodedP.value.toLowerCase();
+                        // 42 because len(0x) + 40
+                        if (decodedP.value.length > 42) {
+                            const toRemove = decodedP.value.length - 42;
+                            const temp = decodedP.value.split("");
+                            temp.splice(2, toRemove);
+                            decodedP.value = temp.join("");
+                        }
+                    }
+
+                    if (param.type === "uint256" || param.type === "uint8" || param.type === "int") {
+                        decodedP.value = new BN(decodedP.value).toString(10);
+                    }
+
+                    decodedParams.push(decodedP);
+                });
+
+                return {
+                    address: logItem.address,
+                    events: decodedParams,
+                    name: method.name
+                };
+            }
+        });
     }
 
     public destroy() {
