@@ -55,6 +55,13 @@
   */
   decodeLogs(logs: ILogs): IDecodedLogs;
 /**
+  * add abi to abiDecoder
+  *
+  * @param {any[]} abis
+  * @memberof MoacABI
+  */
+addABI(abi: any[]): void;
+/**
   * destroy abis and methodIDs of abiDecoder
   *
   * @memberof MoacABI

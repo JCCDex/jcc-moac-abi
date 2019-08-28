@@ -174,6 +174,16 @@ export default class MoacABI {
     }
 
     /**
+     * add abi to abiDecoder
+     *
+     * @param {any[]} abis
+     * @memberof MoacABI
+     */
+    public addABI(abi: any[]) {
+        abiDecoder.addABI(abi);
+    }
+
+    /**
      * destroy abis and methodIDs of abiDecoder
      *
      * @memberof MoacABI

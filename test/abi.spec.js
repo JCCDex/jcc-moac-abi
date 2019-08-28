@@ -145,6 +145,111 @@ describe("test abi", function() {
           ],
           "address": "0x4c6007cea426e543551f2cb6392e6d6768f74706"
         }]);
+
+        inst.addABI([{
+          anonymous: false,
+          inputs: [{
+              indexed: true,
+              name: "_token",
+              type: "address"
+            },
+            {
+              indexed: true,
+              name: "_user",
+              type: "address"
+            },
+            {
+              indexed: false,
+              name: "_jthash",
+              type: "bytes32"
+            },
+            {
+              indexed: false,
+              name: "_amount",
+              type: "uint256"
+            },
+            {
+              indexed: false,
+              name: "_balance",
+              type: "uint256"
+            }
+          ],
+          name: "Withdraw",
+          type: "event"
+        }])
+
+        const decoded = inst.decodeLogs([{
+          TxData: "0x0b48402ac9430f07be8ac52cce275e8534c0c9d20c7c0b85a255644a7a448fb10000000000000000000000000000000000000000000000878678326eac900000000000000000000000000000000000000000000000004a391c87dda27966d840",
+          address: "0x66c9b619215db959ec137ede6b96f3fa6fd35a8a",
+          blockHash: "0x68a1ebac521918705deaec0030d0adecefc2bfafc2242ab84a12fbb535151e68",
+          blockNumber: 3176078,
+          logIndex: 2,
+          removed: false,
+          topics: ["0x83fa319e3dcab86af4165864bb9e9e884168247533a1e4abf5520b5f0321a0fe", "0x0000000000000000000000004c6007cea426e543551f2cb6392e6d6768f74706", "0x0000000000000000000000003873d4505ab639088d8393ed60803d5ee340e93f"],
+          transactionHash: "0xc370de32abdea471092c2ce3a18a54c59c03af04b82da7ec9fb55221e812702b",
+          transactionIndex: 5
+        }, {
+          TxData: "0x0000000000000000000000000000000000000000000000878678326eac900000",
+          address: "0x4c6007cea426e543551f2cb6392e6d6768f74706",
+          blockHash: "0x68a1ebac521918705deaec0030d0adecefc2bfafc2242ab84a12fbb535151e68",
+          blockNumber: 3176078,
+          logIndex: 3,
+          removed: false,
+          topics: ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", "0x00000000000000000000000066c9b619215db959ec137ede6b96f3fa6fd35a8a", "0x0000000000000000000000003873d4505ab639088d8393ed60803d5ee340e93f"],
+          transactionHash: "0xc370de32abdea471092c2ce3a18a54c59c03af04b82da7ec9fb55221e812702b",
+          transactionIndex: 5
+        }])
+        expect(decoded).to.deep.equal([{
+            "address": "0x66c9b619215db959ec137ede6b96f3fa6fd35a8a",
+            "events": [{
+                "name": "_token",
+                "type": "address",
+                "value": "0x4c6007cea426e543551f2cb6392e6d6768f74706"
+              },
+              {
+                "name": "_user",
+                "type": "address",
+                "value": "0x3873d4505ab639088d8393ed60803d5ee340e93f"
+              },
+              {
+                "name": "_jthash",
+                "type": "bytes32",
+                "value": "0x0b48402ac9430f07be8ac52cce275e8534c0c9d20c7c0b85a255644a7a448fb1"
+              },
+              {
+                "name": "_amount",
+                "type": "uint256",
+                "value": "2500000000000000000000"
+              },
+              {
+                "name": "_balance",
+                "type": "uint256",
+                "value": "350508639999999999400000"
+              }
+            ],
+            "name": "Withdraw"
+          },
+          {
+            "address": "0x4c6007cea426e543551f2cb6392e6d6768f74706",
+            "events": [{
+                "name": "_from",
+                "type": "address",
+                "value": "0x66c9b619215db959ec137ede6b96f3fa6fd35a8a"
+              },
+              {
+                "name": "_to",
+                "type": "address",
+                "value": "0x3873d4505ab639088d8393ed60803d5ee340e93f"
+              },
+              {
+                "name": "_value",
+                "type": "uint256",
+                "value": "2500000000000000000000"
+              }
+            ],
+            "name": "Transfer"
+          }
+        ]);
       })
 
       it("throw error if doesn't contain function", function() {
