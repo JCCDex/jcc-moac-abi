@@ -8,6 +8,12 @@ Decoder and encoder for the MOAC ABI and decode events from MOAC transactions.
 [![Dependencies](https://img.shields.io/david/JCCDex/jcc-moac-abi.svg?style=flat-square)](https://david-dm.org/JCCDex/jcc-moac-abi)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
+## Installtion
+
+```shell
+npm i jcc-moac-abi
+```
+
 ## API
 
 [APIs](https://github.com/JCCDex/jcc-moac-abi/blob/master/docs/API.md)
