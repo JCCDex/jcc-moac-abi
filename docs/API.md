@@ -40,17 +40,18 @@
   * decode the input value
   *
   * @param {string} data
-  * @returns {*}
+  * @returns {IDecodeds}
   * @memberof MoacABI
   */
-  decode(data: string): any;
+  decode(data: string): IDecodeds;
 /**
   * decode moac transaction logs
   *
   * [Reference](https://github.com/ConsenSys/abi-decoder/blob/master/index.js#L130)
   *
   * @param {ILogs} logs
-  * @returns {IDecodedLogs}
+  * @returns {IDecodedLogs} if event is defined and decode succeed, return log that contains
+  * events as input arguments and name as event's name, otherwise return itself.
   * @memberof MoacABI
   */
   decodeLogs(logs: ILogs): IDecodedLogs;

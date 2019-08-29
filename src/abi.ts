@@ -86,7 +86,7 @@ export default class MoacABI {
      * decode the input value
      *
      * @param {string} data
-     * @returns {*}
+     * @returns {IDecodeds}
      * @memberof MoacABI
      */
     public decode(data: string): IDecodeds {
@@ -103,7 +103,8 @@ export default class MoacABI {
      * [Reference](https://github.com/ConsenSys/abi-decoder/blob/master/index.js#L130)
      *
      * @param {ILogs} logs
-     * @returns {IDecodedLogs}
+     * @returns {IDecodedLogs} if event is defined and decode succeed, return log that contains
+     * events as input arguments and name as event's name, otherwise return itself.
      * @memberof MoacABI
      */
     public decodeLogs(logs: ILogs): IDecodedLogs {
