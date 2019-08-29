@@ -29,10 +29,10 @@ jcc-moac-abi的作用是将合约调用演化为对函数名，参数的字符�
 ```javascript
 ...
 const Chain3 = require("chain3");
-const MoacABI = require("../lib/abi").MoacABI;
+const MoacABI = require("jcc-moac-abi").MoacABI;
 const erc20ABI = require("./abi/erc20ABI");
 const erc721ABI = require("./abi/erc721ABI");
-....
+...
 
 // 建立起合约的实例
 const chain3 = new Chain3(new Chain3.providers.HttpProvider("https://moac1ma17f1.jccdex.cn"));
