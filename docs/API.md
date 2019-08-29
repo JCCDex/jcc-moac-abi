@@ -28,6 +28,15 @@
   */
   private _abi;
 /**
+ * get item of function meta data
+ *
+ * @param {string} name defined function name in the abi
+ * @param {*} args parameters according to the defined inputs
+ * @returns {any}
+ * @memberof MoacABI
+ */
+getAbiItem(name: string, ...args): any;
+/**
   * encode the input value by function name
   *
   * @param {string} name defined function name in the abi

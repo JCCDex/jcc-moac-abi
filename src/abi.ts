@@ -49,6 +49,33 @@ export default class MoacABI {
     }
 
     /**
+     * get item of function meta data
+     *
+     * @param {string} name defined function name in the abi
+     * @param {*} args parameters according to the defined inputs
+     * @returns {any}
+     * @memberof MoacABI
+     */
+    public getAbiItem(name: string, ...args): any {
+        const method: any = this._contract[name];
+        if (!isFunction(method)) {
+            throw new Error(`The contract doesn't contain "${name}" function`);
+        }
+        const filterABIs = this._abi.filter((item) => item.name === name);
+        let abi;
+        if (filterABIs.length === 1) {
+            abi = filterABIs[0];
+        } else {
+            abi = filterABIs.find((item) => item.inputs.length === args.length);
+            if (!abi) {
+                throw new Error("Invalid number of arguments to Solidity function");
+            }
+        }
+
+        return abi;
+    }
+
+    /**
      * encode the input value by function name
      *
      * @param {string} name defined function name in the abi
