@@ -62,27 +62,24 @@ export default class MoacABI {
             throw new Error(`The contract doesn't contain "${name}" function`);
         }
         const filterABIs = this._abi.filter((item) => item.name === name);
-        let decodedData: string;
+        let encodedData: string;
         if (filterABIs.length === 1) {
-            decodedData = method["getData"].apply(null, args);
+            encodedData = method["getData"].apply(null, args);
         } else {
             const abi = filterABIs.find((item) => item.inputs.length === args.length);
             if (!abi) {
                 throw new Error("Invalid number of arguments to Solidity function");
             }
 
-            /**
-             * detail: https://github.com/MOACChain/chain3/blob/master/lib/chain3/function.js#L282
-             *
-             */
+            // detail: https://github.com/MOACChain/chain3/blob/master/lib/chain3/function.js#L282
             const typename = abi.inputs.map((input) => input.type).join(",");
-            decodedData = method[typename].getData.apply(null, args);
+            encodedData = method[typename].getData.apply(null, args);
         }
 
-        if (decodedData.includes("NaN")) {
+        if (encodedData.includes("NaN")) {
             throw new Error('The encoded data contains "NaN", please check the input arguments');
         }
-        return decodedData;
+        return encodedData;
     }
 
     /**
