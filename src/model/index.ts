@@ -1,3 +1,4 @@
+
 interface ILog {
     TxData: string,
     address: string,
@@ -21,6 +22,14 @@ interface IDecodedLog extends ILog {
     name?: string
 }
 
+interface IDecoded {
+    name: string,
+    value: any,
+    type: string
+}
+
 export type ILogs = ILog[];
 
 export type IDecodedLogs = IDecodedLog[];
+
+export type IDecodeds = IDecoded[];

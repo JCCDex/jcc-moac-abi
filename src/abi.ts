@@ -4,7 +4,7 @@ import isFunction = require("lodash/isFunction");
 import isObject = require("lodash/isObject");
 import abiCoder = require("web3-eth-abi");
 import { BN } from "web3-utils";
-import { IDecodedLogs, ILogs } from "./model";
+import { IDecodedLogs, IDecodeds, ILogs } from "./model";
 
 /**
  * decoder and encoder for moac
@@ -89,7 +89,7 @@ export default class MoacABI {
      * @returns {*}
      * @memberof MoacABI
      */
-    public decode(data: string): any {
+    public decode(data: string): IDecodeds {
         if (abiDecoder.getABIs().length === 0) {
             abiDecoder.addABI(this._abi);
         }
