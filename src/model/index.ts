@@ -16,10 +16,9 @@ interface IEvent {
     value: any
 }
 
-interface IDecodedLog {
-    address: string,
-    events: IEvent[],
-    name: string
+interface IDecodedLog extends ILog {
+    events?: IEvent[],
+    name?: string
 }
 
 export type ILogs = ILog[];

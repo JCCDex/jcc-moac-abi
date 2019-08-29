@@ -113,71 +113,56 @@ export default class MoacABI {
         return logs.filter((log) => log.topics.length > 0).map((logItem) => {
             const methodID = logItem.topics[0].slice(2);
             const method = abiDecoder.getMethodIDs()[methodID];
-            if (!method) {
-                const events = [];
-                events.push({
-                    value: logItem.TxData
-                });
-                logItem.topics.slice(1).map(((value) => {
-                    events.push({ value });
-                }));
-                return {
-                    address: logItem.address,
-                    events,
-                    name: logItem.topics[0]
-                };
-            }
-            const logData = logItem.TxData;
-            const decodedParams = [];
-            let dataIndex = 0;
-            let topicsIndex = 1;
+            if (method) {
+                const logData = logItem.TxData;
+                const decodedParams = [];
+                let dataIndex = 0;
+                let topicsIndex = 1;
 
-            const dataTypes = [];
-            method.inputs.map((input) => {
-                if (!input.indexed) {
-                    dataTypes.push(input.type);
-                }
-            });
-
-            const decodedData = abiCoder.decodeParameters(dataTypes, logData.slice(2));
-            // Loop topic and data to get the params
-            method.inputs.map((param) => {
-                const decodedP: any = {
-                    name: param.name,
-                    type: param.type,
-                };
-
-                if (param.indexed) {
-                    decodedP.value = logItem.topics[topicsIndex];
-                    topicsIndex++;
-                } else {
-                    decodedP.value = decodedData[dataIndex];
-                    dataIndex++;
-                }
-
-                if (param.type === "address") {
-                    decodedP.value = decodedP.value.toLowerCase();
-                    // 42 because len(0x) + 40
-                    if (decodedP.value.length > 42) {
-                        const toRemove = decodedP.value.length - 42;
-                        const temp = decodedP.value.split("");
-                        temp.splice(2, toRemove);
-                        decodedP.value = temp.join("");
+                const dataTypes = [];
+                method.inputs.map((input) => {
+                    if (!input.indexed) {
+                        dataTypes.push(input.type);
                     }
-                }
+                });
 
-                if (param.type === "uint256" || param.type === "uint8" || param.type === "int") {
-                    decodedP.value = new BN(decodedP.value).toString(10);
-                }
+                const decodedData = abiCoder.decodeParameters(dataTypes, logData.slice(2));
+                // Loop topic and data to get the params
+                method.inputs.map((param) => {
+                    const decodedP: any = {
+                        name: param.name,
+                        type: param.type,
+                    };
 
-                decodedParams.push(decodedP);
-            });
+                    if (param.indexed) {
+                        decodedP.value = logItem.topics[topicsIndex];
+                        topicsIndex++;
+                    } else {
+                        decodedP.value = decodedData[dataIndex];
+                        dataIndex++;
+                    }
 
-            return {
-                address: logItem.address,
-                events: decodedParams,
-                name: method.name
-            };
+                    if (param.type === "address") {
+                        decodedP.value = decodedP.value.toLowerCase();
+                        // 42 because len(0x) + 40
+                        if (decodedP.value.length > 42) {
+                            const toRemove = decodedP.value.length - 42;
+                            const temp = decodedP.value.split("");
+                            temp.splice(2, toRemove);
+                            decodedP.value = temp.join("");
+                        }
+                    }
+
+                    if (param.type === "uint256" || param.type === "uint8" || param.type === "int") {
+                        decodedP.value = new BN(decodedP.value).toString(10);
+                    }
+
+                    decodedParams.push(decodedP);
+                });
+
+                return Object.assign(logItem, { events: decodedParams, name: method.name });
+            }
+            return logItem;
         });
     }
 
