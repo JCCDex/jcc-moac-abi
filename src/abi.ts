@@ -4,7 +4,7 @@ import isFunction = require("lodash/isFunction");
 import isObject = require("lodash/isObject");
 import abiCoder = require("web3-eth-abi");
 import { BN } from "web3-utils";
-import { IDecodedLogs, IDecodeds, ILogs } from "./model";
+import { IABI, IABIItem, IDecodedLogs, IDecodeds, ILogs } from "./model";
 
 /**
  * decoder and encoder for moac
@@ -27,10 +27,10 @@ export default class MoacABI {
      * moac abi
      *
      * @private
-     * @type {any[]}
+     * @type {IABI}
      * @memberof MoacABI
      */
-    private _abi: any[];
+    private _abi: IABI;
 
     /**
      * Creates an instance of MoacABI.
@@ -56,13 +56,13 @@ export default class MoacABI {
      * @returns {any}
      * @memberof MoacABI
      */
-    public getAbiItem(name: string, ...args): any {
+    public getAbiItem(name: string, ...args): IABIItem {
         const method: any = this._contract[name];
         if (!isFunction(method)) {
             throw new Error(`The contract doesn't contain "${name}" function`);
         }
-        const filterABIs = this._abi.filter((item) => item.name === name);
-        let abi;
+        const filterABIs: IABI = this._abi.filter((item) => item.name === name);
+        let abi: IABIItem;
         if (filterABIs.length === 1) {
             abi = filterABIs[0];
         } else {
@@ -88,12 +88,12 @@ export default class MoacABI {
         if (!isFunction(method)) {
             throw new Error(`The contract doesn't contain "${name}" function`);
         }
-        const filterABIs = this._abi.filter((item) => item.name === name);
+        const filterABIs: IABI = this._abi.filter((item) => item.name === name);
         let encodedData: string;
         if (filterABIs.length === 1) {
             encodedData = method["getData"].apply(null, args);
         } else {
-            const abi = filterABIs.find((item) => item.inputs.length === args.length);
+            const abi: IABIItem = filterABIs.find((item) => item.inputs.length === args.length);
             if (!abi) {
                 throw new Error("Invalid number of arguments to Solidity function");
             }
@@ -197,10 +197,10 @@ export default class MoacABI {
     /**
      * add abi to abiDecoder
      *
-     * @param {any[]} abis
+     * @param {IABI} abis
      * @memberof MoacABI
      */
-    public addABI(abi: any[]) {
+    public addABI(abi: IABI) {
         abiDecoder.addABI(abi);
     }
 

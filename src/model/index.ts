@@ -1,4 +1,3 @@
-
 interface ILog {
     TxData: string,
     address: string,
@@ -28,8 +27,33 @@ interface IDecoded {
     type: string
 }
 
+interface IInput {
+    name: string,
+    type: string,
+    components?: any
+}
+
+interface IOutput {
+    name: string,
+    type: string,
+    components?: any
+}
+
+// reference: https://solidity.readthedocs.io/en/latest/abi-spec.html#json
+export interface IABIItem {
+    type?: string,
+    name?: string,
+    inputs?: IInput[],
+    outputs?: IOutput[],
+    stateMutability?: string,
+    payable?: boolean,
+    constant?: boolean
+}
+
 export type ILogs = ILog[];
 
 export type IDecodedLogs = IDecodedLog[];
 
 export type IDecodeds = IDecoded[];
+
+export type IABI = IABIItem[];
