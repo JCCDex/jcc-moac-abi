@@ -346,8 +346,6 @@ describe("test abi", function() {
       const contract = chain3.mc.contract(erc721ABI).at("0x1b9bae18532eeb8cd4316a20678a0c43f28f0ae2");
       const inst = new MoacABI(contract);
 
-      MoacABI.addABI(erc721ABI);
-
       before(function() {
         MoacABI.addABI(erc721ABI);
       });
