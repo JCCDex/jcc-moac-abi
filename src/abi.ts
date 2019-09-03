@@ -53,7 +53,7 @@ export default class MoacABI {
      *
      * @param {string} name defined function name in the abi
      * @param {*} args parameters according to the defined inputs
-     * @returns {any}
+     * @returns {IABIItem}
      * @memberof MoacABI
      */
     public getAbiItem = (name: string, ...args): IABIItem => {
@@ -112,14 +112,12 @@ export default class MoacABI {
     /**
      * decode the input value
      *
+     * @static
      * @param {string} data
      * @returns {IDecoded[]}
      * @memberof MoacABI
      */
-    public decode = (data: string): IDecoded[] => {
-        if (abiDecoder.getABIs().length === 0) {
-            abiDecoder.addABI(this._abi);
-        }
+    public static decode(data: string): IDecoded[] {
         const decodedData = abiDecoder.decodeMethod(data);
         return decodedData;
     }
@@ -129,15 +127,13 @@ export default class MoacABI {
      *
      * [Reference](https://github.com/ConsenSys/abi-decoder/blob/master/index.js#L130)
      *
+     * @static
      * @param {ILog[]} logs
      * @returns {IDecodedLog[]} if event is defined and decode succeed, return log that contains
      * events as input arguments and name as event's name, otherwise return itself.
      * @memberof MoacABI
      */
-    public decodeLogs = (logs: ILog[]): IDecodedLog[] => {
-        if (abiDecoder.getABIs().length === 0) {
-            abiDecoder.addABI(this._abi);
-        }
+    public static decodeLogs(logs: ILog[]): IDecodedLog[] {
         return logs.filter((log) => log.topics.length > 0).map((logItem) => {
             const methodID = logItem.topics[0].slice(2);
             const method = abiDecoder.getMethodIDs()[methodID];
@@ -197,21 +193,24 @@ export default class MoacABI {
     /**
      * add abi to abiDecoder
      *
-     * @param {IABIItem[]} abis
+     * @static
+     * @param {IABIItem[]} abi
      * @memberof MoacABI
      */
-    public addABI(abi: IABIItem[]) {
+    public static addABI(abi: IABIItem[]) {
         abiDecoder.addABI(abi);
     }
 
     /**
-     * destroy abis and methodIDs of abiDecoder
+     * remove ABIs and methodIDs from abiDecoder
      *
+     * @static
+     * @param {IABIItem[]} abi
      * @memberof MoacABI
      */
-    public destroy() {
+    public static removeABI(abi: IABIItem[]) {
         abiDecoder.getABIs().length = 0;
-        abiDecoder.getMethodIDs().length = 0;
+        abiDecoder.removeABI(abi);
     }
 }
 

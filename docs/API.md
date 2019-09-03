@@ -27,15 +27,17 @@
   * @memberof MoacABI
   */
   private _abi;
+
 /**
  * get item of function meta data
  *
  * @param {string} name defined function name in the abi
  * @param {*} args parameters according to the defined inputs
- * @returns {any}
+ * @returns {IABIItem}
  * @memberof MoacABI
  */
-getAbiItem(name: string, ...args): any;
+  getAbiItem(name: string, ...args: any[]): IABIItem;
+
 /**
   * encode the input value by function name
   *
@@ -45,36 +47,45 @@ getAbiItem(name: string, ...args): any;
   * @memberof MoacABI
   */
   encode(name: string, ...args: any[]): string;
+
 /**
   * decode the input value
   *
+  * @static
   * @param {string} data
-  * @returns {IDecodeds}
+  * @returns {IDecoded[]}
   * @memberof MoacABI
   */
-  decode(data: string): IDecodeds;
+  static decode(data: string): IDecoded[];
+
 /**
   * decode moac transaction logs
   *
   * [Reference](https://github.com/ConsenSys/abi-decoder/blob/master/index.js#L130)
   *
-  * @param {ILogs} logs
-  * @returns {IDecodedLogs} if event is defined and decode succeed, return log that contains
+  * @static
+  * @param {ILog[]} logs
+  * @returns {IDecodedLog[]} if event is defined and decode succeed, return log that contains
   * events as input arguments and name as event's name, otherwise return itself.
   * @memberof MoacABI
   */
-  decodeLogs(logs: ILogs): IDecodedLogs;
+  static decodeLogs(logs: ILog[]): IDecodedLog[];
+
 /**
   * add abi to abiDecoder
   *
-  * @param {any[]} abis
+  * @static
+  * @param {IABIItem[]} abi
   * @memberof MoacABI
   */
-addABI(abi: any[]): void;
+  static addABI(abi: IABIItem[]): void;
+
 /**
-  * destroy abis and methodIDs of abiDecoder
+  * remove ABIs and methodIDs from abiDecoder
   *
+  * @static
+  * @param {IABIItem[]} abi
   * @memberof MoacABI
   */
-  destroy(): void;
+  static removeABI(abi: IABIItem[]): void;
 ```

@@ -21,14 +21,16 @@ describe("test abi", function() {
       const contract = chain3.mc.contract(erc20ABI).at("0x1b9bae18532eeb8cd4316a20678a0c43f28f0ae2");
       const inst = new MoacABI(contract);
 
-      this.afterAll(() => {
-        inst.destroy()
-      })
+      before(function() {
+        MoacABI.addABI(erc20ABI);
+      });
+
+      after(function() {
+        MoacABI.removeABI(erc20ABI);
+      });
 
       it("test get abi item", function() {
         const data = inst.getAbiItem.apply(null, ["transfer", "0x533243557dfdc87ae5bda885e22db00f87499971", "30000000000000000"])
-
-        // console.log("get abi item:", data.stateMutability);
         expect(data.stateMutability).to.equal("nonpayable");
       });
 
@@ -39,7 +41,7 @@ describe("test abi", function() {
       it("test transfer", function() {
         const data = inst.encode("transfer", "0x533243557dfdc87ae5bda885e22db00f87499971", "30000000000000000")
         expect(data).to.equal("0xa9059cbb000000000000000000000000533243557dfdc87ae5bda885e22db00f87499971000000000000000000000000000000000000000000000000006a94d74f430000")
-        const decoded = inst.decode(data);
+        const decoded = MoacABI.decode(data);
         expect(decoded).to.deep.equal({
           name: 'transfer',
           params: [{
@@ -59,7 +61,7 @@ describe("test abi", function() {
       it("test approve", function() {
         const data = inst.encode("approve", "0x09344477fdc71748216a7b8bbe7f2013b893def8", "30000000000000000");
         expect(data).to.equal("0x095ea7b300000000000000000000000009344477fdc71748216a7b8bbe7f2013b893def8000000000000000000000000000000000000000000000000006a94d74f430000")
-        const decoded = inst.decode(data);
+        const decoded = MoacABI.decode(data);
         expect(decoded).to.deep.equal({
           name: 'approve',
           params: [{
@@ -79,7 +81,7 @@ describe("test abi", function() {
       it("test transferFrom", function() {
         const data = inst.encode("transferFrom", "0x09344477fdc71748216a7b8bbe7f2013b893def8", "0xae832592b6d697cd6b3d053866bfe5f334e7c667", "30000000000000000");
         expect(data).to.equal("0x23b872dd00000000000000000000000009344477fdc71748216a7b8bbe7f2013b893def8000000000000000000000000ae832592b6d697cd6b3d053866bfe5f334e7c667000000000000000000000000000000000000000000000000006a94d74f430000")
-        const decoded = inst.decode(data);
+        const decoded = MoacABI.decode(data);
         expect(decoded).to.deep.equal({
           name: 'transferFrom',
           params: [{
@@ -114,8 +116,7 @@ describe("test abi", function() {
           transactionIndex: 1
         }];
 
-        inst.destroy();
-        const decodedLogs = inst.decodeLogs(logs);
+        const decodedLogs = MoacABI.decodeLogs(logs);
         expect(decodedLogs).to.deep.equal([{
           "name": "Transfer",
           "events": [{
@@ -144,37 +145,8 @@ describe("test abi", function() {
           transactionHash: "0x9a7da10a30ad4c8e1bb4461107497130a19f53a844069dd3e019557ee1a423b8",
           transactionIndex: 1
         }]);
-        expect(inst.decodeLogs(logs)).to.deep.equal([{
-          "name": "Transfer",
-          "events": [{
-              "name": "_from",
-              "type": "address",
-              "value": "0x687f6ab056708fcfd34b3226c0b70ddf95b2eab2"
-            },
-            {
-              "name": "_to",
-              "type": "address",
-              "value": "0x66c9b619215db959ec137ede6b96f3fa6fd35a8a"
-            },
-            {
-              "name": "_value",
-              "type": "uint256",
-              "value": "6990000000000000000000"
-            }
-          ],
-          TxData: "0x00000000000000000000000000000000000000000000017aedbc9d648c780000",
-          address: "0x4c6007cea426e543551f2cb6392e6d6768f74706",
-          blockHash: "0x181c92ab726131010021473d6e444d2f682e013eb12b2d4faa0946a8847c56f1",
-          blockNumber: 3175749,
-          logIndex: 0,
-          removed: false,
-          topics: ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", "0x000000000000000000000000687f6ab056708fcfd34b3226c0b70ddf95b2eab2", "0x00000000000000000000000066c9b619215db959ec137ede6b96f3fa6fd35a8a"],
-          transactionHash: "0x9a7da10a30ad4c8e1bb4461107497130a19f53a844069dd3e019557ee1a423b8",
-          transactionIndex: 1
-        }]);
 
-
-        let decoded = inst.decodeLogs([{
+        let decoded = MoacABI.decodeLogs([{
           TxData: "0x0b48402ac9430f07be8ac52cce275e8534c0c9d20c7c0b85a255644a7a448fb10000000000000000000000000000000000000000000000878678326eac900000000000000000000000000000000000000000000000004a391c87dda27966d840",
           address: "0x66c9b619215db959ec137ede6b96f3fa6fd35a8a",
           blockHash: "0x68a1ebac521918705deaec0030d0adecefc2bfafc2242ab84a12fbb535151e68",
@@ -235,7 +207,7 @@ describe("test abi", function() {
           "name": "Transfer"
         }]);
 
-        inst.addABI([{
+        MoacABI.addABI([{
           anonymous: false,
           inputs: [{
               indexed: true,
@@ -267,7 +239,7 @@ describe("test abi", function() {
           type: "event"
         }])
 
-        decoded = inst.decodeLogs([{
+        decoded = MoacABI.decodeLogs([{
           TxData: "0x0b48402ac9430f07be8ac52cce275e8534c0c9d20c7c0b85a255644a7a448fb10000000000000000000000000000000000000000000000878678326eac900000000000000000000000000000000000000000000000004a391c87dda27966d840",
           address: "0x66c9b619215db959ec137ede6b96f3fa6fd35a8a",
           blockHash: "0x68a1ebac521918705deaec0030d0adecefc2bfafc2242ab84a12fbb535151e68",
@@ -374,14 +346,20 @@ describe("test abi", function() {
       const contract = chain3.mc.contract(erc721ABI).at("0x1b9bae18532eeb8cd4316a20678a0c43f28f0ae2");
       const inst = new MoacABI(contract);
 
-      this.afterAll(() => {
-        inst.destroy()
-      })
+      MoacABI.addABI(erc721ABI);
+
+      before(function() {
+        MoacABI.addABI(erc721ABI);
+      });
+
+      after(function() {
+        MoacABI.removeABI(erc721ABI);
+      });
 
       it("test safeTransferFrom without data", function() {
         const data = inst.encode("safeTransferFrom", "0xae832592b6d697cd6b3d053866bfe5f334e7c667", "0x533243557dfdc87ae5bda885e22db00f87499971", 1);
         expect(data).to.equal("0x42842e0e000000000000000000000000ae832592b6d697cd6b3d053866bfe5f334e7c667000000000000000000000000533243557dfdc87ae5bda885e22db00f874999710000000000000000000000000000000000000000000000000000000000000001")
-        expect(inst.decode(data)).to.deep.equal({
+        expect(MoacABI.decode(data)).to.deep.equal({
           name: 'safeTransferFrom',
           params: [{
               name: '_from',
@@ -405,7 +383,7 @@ describe("test abi", function() {
       it("test safeTransferFrom with data", function() {
         const data = inst.encode("safeTransferFrom", "0xae832592b6d697cd6b3d053866bfe5f334e7c667", "0x533243557dfdc87ae5bda885e22db00f87499971", 1, "0xaa");
         expect(data).to.equal("0xb88d4fde000000000000000000000000ae832592b6d697cd6b3d053866bfe5f334e7c667000000000000000000000000533243557dfdc87ae5bda885e22db00f87499971000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000001aa00000000000000000000000000000000000000000000000000000000000000")
-        expect(inst.decode(data)).to.deep.equal({
+        expect(MoacABI.decode(data)).to.deep.equal({
           name: 'safeTransferFrom',
           params: [{
               name: '_from',
@@ -433,14 +411,13 @@ describe("test abi", function() {
 
       it("test safeTransferFrom with data for getAbiItem", function() {
         const data = inst.getAbiItem("safeTransferFrom", "0xae832592b6d697cd6b3d053866bfe5f334e7c667", "0x533243557dfdc87ae5bda885e22db00f87499971", 1, "0xaa");
-        // console.log('data:', JSON.stringify(data));
         expect(data.name).to.equal("safeTransferFrom")
       })
 
       it("test mint", function() {
         const data = inst.encode("mint", "0x533243557dfdc87ae5bda885e22db00f87499971", 1, "https://jccdex.cn/1")
         expect(data).to.equal("0xd3fc9864000000000000000000000000533243557dfdc87ae5bda885e22db00f8749997100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000001368747470733a2f2f6a63636465782e636e2f3100000000000000000000000000")
-        expect(inst.decode(data)).to.deep.equal({
+        expect(MoacABI.decode(data)).to.deep.equal({
           name: 'mint',
           params: [{
               name: '_to',
@@ -464,7 +441,7 @@ describe("test abi", function() {
       it("test burn", function() {
         const data = inst.encode("burn", "0x533243557dfdc87ae5bda885e22db00f87499971", 1)
         expect(data).to.equal("0x9dc29fac000000000000000000000000533243557dfdc87ae5bda885e22db00f874999710000000000000000000000000000000000000000000000000000000000000001")
-        expect(inst.decode(data)).to.deep.equal({
+        expect(MoacABI.decode(data)).to.deep.equal({
           name: 'burn',
           params: [{
               name: '_owner',
@@ -483,7 +460,7 @@ describe("test abi", function() {
       it("test transferFrom", function() {
         const data = inst.encode("transferFrom", "0xae832592b6d697cd6b3d053866bfe5f334e7c667", "0x533243557dfdc87ae5bda885e22db00f87499971", 1)
         expect(data).to.equal("0x23b872dd000000000000000000000000ae832592b6d697cd6b3d053866bfe5f334e7c667000000000000000000000000533243557dfdc87ae5bda885e22db00f874999710000000000000000000000000000000000000000000000000000000000000001")
-        expect(inst.decode(data)).to.deep.equal({
+        expect(MoacABI.decode(data)).to.deep.equal({
           name: 'transferFrom',
           params: [{
               name: '_from',
@@ -507,7 +484,7 @@ describe("test abi", function() {
       it("test approve", function() {
         const data = inst.encode("approve", "0x533243557dfdc87ae5bda885e22db00f87499971", 1)
         expect(data).to.equal("0x095ea7b3000000000000000000000000533243557dfdc87ae5bda885e22db00f874999710000000000000000000000000000000000000000000000000000000000000001")
-        expect(inst.decode(data)).to.deep.equal({
+        expect(MoacABI.decode(data)).to.deep.equal({
           name: 'approve',
           params: [{
               name: '_approved',
@@ -526,7 +503,7 @@ describe("test abi", function() {
       it("test setApprovalForAll", function() {
         const data = inst.encode("setApprovalForAll", "0x533243557dfdc87ae5bda885e22db00f87499971", true)
         expect(data).to.equal("0xa22cb465000000000000000000000000533243557dfdc87ae5bda885e22db00f874999710000000000000000000000000000000000000000000000000000000000000001")
-        expect(inst.decode(data)).to.deep.equal({
+        expect(MoacABI.decode(data)).to.deep.equal({
           name: 'setApprovalForAll',
           params: [{
               name: '_operator',
