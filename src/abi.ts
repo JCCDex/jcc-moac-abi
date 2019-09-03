@@ -4,7 +4,7 @@ import isFunction = require("lodash/isFunction");
 import isObject = require("lodash/isObject");
 import abiCoder = require("web3-eth-abi");
 import { BN } from "web3-utils";
-import { IABI, IABIItem, IDecodedLogs, IDecodeds, ILogs } from "./model";
+import { IABIItem, IDecoded, IDecodedLog, ILog } from "./model";
 
 /**
  * decoder and encoder for moac
@@ -27,10 +27,10 @@ export default class MoacABI {
      * moac abi
      *
      * @private
-     * @type {IABI}
+     * @type {IABIItem[]}
      * @memberof MoacABI
      */
-    private _abi: IABI;
+    private _abi: IABIItem[];
 
     /**
      * Creates an instance of MoacABI.
@@ -56,12 +56,12 @@ export default class MoacABI {
      * @returns {any}
      * @memberof MoacABI
      */
-    public getAbiItem(name: string, ...args): IABIItem {
+    public getAbiItem = (name: string, ...args): IABIItem => {
         const method: any = this._contract[name];
         if (!isFunction(method)) {
             throw new Error(`The contract doesn't contain "${name}" function`);
         }
-        const filterABIs: IABI = this._abi.filter((item) => item.name === name);
+        const filterABIs: IABIItem[] = this._abi.filter((item) => item.name === name);
         let abi: IABIItem;
         if (filterABIs.length === 1) {
             abi = filterABIs[0];
@@ -83,12 +83,12 @@ export default class MoacABI {
      * @returns {string}
      * @memberof MoacABI
      */
-    public encode(name: string, ...args): string {
+    public encode = (name: string, ...args): string => {
         const method: any = this._contract[name];
         if (!isFunction(method)) {
             throw new Error(`The contract doesn't contain "${name}" function`);
         }
-        const filterABIs: IABI = this._abi.filter((item) => item.name === name);
+        const filterABIs: IABIItem[] = this._abi.filter((item) => item.name === name);
         let encodedData: string;
         if (filterABIs.length === 1) {
             encodedData = method["getData"].apply(null, args);
@@ -113,10 +113,10 @@ export default class MoacABI {
      * decode the input value
      *
      * @param {string} data
-     * @returns {IDecodeds}
+     * @returns {IDecoded[]}
      * @memberof MoacABI
      */
-    public decode(data: string): IDecodeds {
+    public decode = (data: string): IDecoded[] => {
         if (abiDecoder.getABIs().length === 0) {
             abiDecoder.addABI(this._abi);
         }
@@ -129,12 +129,12 @@ export default class MoacABI {
      *
      * [Reference](https://github.com/ConsenSys/abi-decoder/blob/master/index.js#L130)
      *
-     * @param {ILogs} logs
-     * @returns {IDecodedLogs} if event is defined and decode succeed, return log that contains
+     * @param {ILog[]} logs
+     * @returns {IDecodedLog[]} if event is defined and decode succeed, return log that contains
      * events as input arguments and name as event's name, otherwise return itself.
      * @memberof MoacABI
      */
-    public decodeLogs(logs: ILogs): IDecodedLogs {
+    public decodeLogs = (logs: ILog[]): IDecodedLog[] => {
         if (abiDecoder.getABIs().length === 0) {
             abiDecoder.addABI(this._abi);
         }
@@ -197,10 +197,10 @@ export default class MoacABI {
     /**
      * add abi to abiDecoder
      *
-     * @param {IABI} abis
+     * @param {IABIItem[]} abis
      * @memberof MoacABI
      */
-    public addABI(abi: IABI) {
+    public addABI(abi: IABIItem[]) {
         abiDecoder.addABI(abi);
     }
 

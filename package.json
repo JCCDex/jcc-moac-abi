@@ -1,6 +1,6 @@
 {
   "name": "jcc-moac-abi",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Decoder and encoder for the MOAC ABI and decode events from MOAC transactions",
   "main": "lib/abi.js",
   "types": "./lib/abi.d.ts",

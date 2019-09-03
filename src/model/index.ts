@@ -1,4 +1,4 @@
-interface ILog {
+export interface ILog {
     TxData: string,
     address: string,
     blockHash: string,
@@ -16,12 +16,12 @@ interface IEvent {
     value: any
 }
 
-interface IDecodedLog extends ILog {
+export interface IDecodedLog extends ILog {
     events?: IEvent[],
     name?: string
 }
 
-interface IDecoded {
+export interface IDecoded {
     name: string,
     value: any,
     type: string
@@ -49,11 +49,3 @@ export interface IABIItem {
     payable?: boolean,
     constant?: boolean
 }
-
-export type ILogs = ILog[];
-
-export type IDecodedLogs = IDecodedLog[];
-
-export type IDecodeds = IDecoded[];
-
-export type IABI = IABIItem[];
