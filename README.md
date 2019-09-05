@@ -21,9 +21,9 @@ npm i jcc-moac-abi
 
 ## How to use
 
-See test/abi.spec.js for details.
+See [abi.spec.js](https://github.com/JCCDex/jcc-moac-abi/blob/master/test/abi.spec.js) for details.
 
-参见 test/abi.spec.js 获得更多细节信息
+参见[abi.spec.js](https://github.com/JCCDex/jcc-moac-abi/blob/master/test/abi.spec.js)获得更多细节信息
 
 jcc-moac-abi的作用是将合约调用演化为对函数名，参数的字符串拼接，类似call by name的方式对合约进行调用。这种方式极大的简化了对合约调用的封装工作。
 
@@ -32,15 +32,18 @@ const Chain3 = require("chain3");
 const MoacABI = require("jcc-moac-abi").MoacABI;
 const erc20ABI = require("./test/abi/erc20ABI");
 
+// for encoding
+
 // create contract instance
 const chain3 = new Chain3(new Chain3.providers.HttpProvider("https://moac1ma17f1.jccdex.cn"));
 const contract = chain3.mc.contract(erc20ABI).at("0x1b9bae18532eeb8cd4316a20678a0c43f28f0ae2");
-const moacABI = new MoacABI(contract);
 
+const moacABI = new MoacABI(contract);
 // encode
 const data = moacABI.encode("transfer", "0x533243557dfdc87ae5bda885e22db00f87499971", "30000000000000000")
 
 
+// for decoding data and transaction logs
 
 // add abi to abiDecoder firstly
 MoacABI.addABI(erc20ABI);
@@ -48,6 +51,7 @@ MoacABI.addABI(erc20ABI);
 // decode
 const decode = MoacABI.decode(data);
 
+// decode transaction logs
 const logs = [{
     TxData: "0x00000000000000000000000000000000000000000000017aedbc9d648c780000",
     address: "0x4c6007cea426e543551f2cb6392e6d6768f74706",
@@ -59,9 +63,8 @@ const logs = [{
     transactionHash: "0x9a7da10a30ad4c8e1bb4461107497130a19f53a844069dd3e019557ee1a423b8",
     transactionIndex: 1
 }];
-
-// decode transaction logs
 const decodeLogs = MoacABI.decodeLogs(logs);
+
 
 // remove ABIs and methodIDs from abiDecoder
 MoacABI.removeABI(erc20ABI);
