@@ -1,7 +1,6 @@
 import abiDecoder = require("abi-decoder");
-import isArray = require("lodash/isArray");
+import { Contract } from "chain3/lib/chain3/contract";
 import isFunction = require("lodash/isFunction");
-import isObject = require("lodash/isObject");
 import abiCoder = require("web3-eth-abi");
 import { BN } from "web3-utils";
 import { IABIItem, IDecoded, IDecodedLog, ILog } from "./model";
@@ -18,10 +17,10 @@ export default class MoacABI {
      * moac contract instance
      *
      * @private
-     * @type {*}
+     * @type {Contract}
      * @memberof MoacABI
      */
-    private _contract: any;
+    private _contract: Contract;
 
     /**
      * moac abi
@@ -34,15 +33,13 @@ export default class MoacABI {
 
     /**
      * Creates an instance of MoacABI.
-     * @todo if [pr](https://github.com/MOACChain/chain3/pull/14) and released, should use `contract instanceof Contract` to check input value if valid.
-     * @param {*} contract moac contract instance
+     * @param {Contract} contract moac contract instance
      * @memberof MoacABI
      */
-    constructor(contract: any) {
-
-        if (isObject(contract) && isArray(contract["abi"])) {
+    constructor(contract: Contract) {
+        if (contract instanceof Contract) {
             this._contract = contract;
-            this._abi = contract["abi"];
+            this._abi = contract.abi;
         } else {
             throw new Error("The input value isn't a contract instance");
         }
@@ -57,7 +54,7 @@ export default class MoacABI {
      * @memberof MoacABI
      */
     public getAbiItem = (name: string, ...args): IABIItem => {
-        const method: any = this._contract[name];
+        const method = this._contract[name];
         if (!isFunction(method)) {
             throw new Error(`The contract doesn't contain "${name}" function`);
         }
@@ -84,7 +81,7 @@ export default class MoacABI {
      * @memberof MoacABI
      */
     public encode = (name: string, ...args): string => {
-        const method: any = this._contract[name];
+        const method = this._contract[name];
         if (!isFunction(method)) {
             throw new Error(`The contract doesn't contain "${name}" function`);
         }

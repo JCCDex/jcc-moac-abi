@@ -3,11 +3,10 @@
 ```javascript
 /**
   * Creates an instance of MoacABI.
-  * @todo if [pr](https://github.com/MOACChain/chain3/pull/14) and released, should use `contract instanceof Contract` to check input value if valid.
-  * @param {*} contract moac contract instance
+  * @param {Contract} contract moac contract instance
   * @memberof MoacABI
   */
-  constructor(contract: any);
+  constructor(contract: Contract);
 ```
 
  ```javascript
@@ -15,7 +14,7 @@
   * moac contract instance
   *
   * @private
-  * @type {*}
+  * @type {Contract}
   * @memberof MoacABI
   */
   private _contract;
@@ -23,7 +22,7 @@
   * moac abi
   *
   * @private
-  * @type {any[]}
+  * @type {IABIItem[]}
   * @memberof MoacABI
   */
   private _abi;
