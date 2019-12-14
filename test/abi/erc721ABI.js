@@ -1,16 +1,21 @@
 "use strict";
 
-const erc721ABI = [{
+const erc721ABI = [
+  {
     constant: true,
-    inputs: [{
-      name: "_interfaceID",
-      type: "bytes4"
-    }],
+    inputs: [
+      {
+        name: "_interfaceID",
+        type: "bytes4"
+      }
+    ],
     name: "supportsInterface",
-    outputs: [{
-      name: "",
-      type: "bool"
-    }],
+    outputs: [
+      {
+        name: "",
+        type: "bool"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
@@ -19,32 +24,39 @@ const erc721ABI = [{
     constant: true,
     inputs: [],
     name: "name",
-    outputs: [{
-      name: "_name",
-      type: "string"
-    }],
+    outputs: [
+      {
+        name: "_name",
+        type: "string"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
     constant: true,
-    inputs: [{
-      name: "_tokenId",
-      type: "uint256"
-    }],
+    inputs: [
+      {
+        name: "_tokenId",
+        type: "uint256"
+      }
+    ],
     name: "getApproved",
-    outputs: [{
-      name: "",
-      type: "address"
-    }],
+    outputs: [
+      {
+        name: "",
+        type: "address"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
     constant: false,
-    inputs: [{
+    inputs: [
+      {
         name: "_approved",
         type: "address"
       },
@@ -63,17 +75,20 @@ const erc721ABI = [{
     constant: true,
     inputs: [],
     name: "totalSupply",
-    outputs: [{
-      name: "",
-      type: "uint256"
-    }],
+    outputs: [
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
     constant: false,
-    inputs: [{
+    inputs: [
+      {
         name: "_from",
         type: "address"
       },
@@ -94,7 +109,8 @@ const erc721ABI = [{
   },
   {
     constant: true,
-    inputs: [{
+    inputs: [
+      {
         name: "_owner",
         type: "address"
       },
@@ -104,17 +120,20 @@ const erc721ABI = [{
       }
     ],
     name: "tokenOfOwnerByIndex",
-    outputs: [{
-      name: "",
-      type: "uint256"
-    }],
+    outputs: [
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
     constant: false,
-    inputs: [{
+    inputs: [
+      {
         name: "_from",
         type: "address"
       },
@@ -135,45 +154,57 @@ const erc721ABI = [{
   },
   {
     constant: true,
-    inputs: [{
-      name: "_index",
-      type: "uint256"
-    }],
+    inputs: [
+      {
+        name: "_index",
+        type: "uint256"
+      }
+    ],
     name: "tokenByIndex",
-    outputs: [{
-      name: "",
-      type: "uint256"
-    }],
+    outputs: [
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
     constant: true,
-    inputs: [{
-      name: "_tokenId",
-      type: "uint256"
-    }],
+    inputs: [
+      {
+        name: "_tokenId",
+        type: "uint256"
+      }
+    ],
     name: "ownerOf",
-    outputs: [{
-      name: "_owner",
-      type: "address"
-    }],
+    outputs: [
+      {
+        name: "_owner",
+        type: "address"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
     constant: true,
-    inputs: [{
-      name: "_owner",
-      type: "address"
-    }],
+    inputs: [
+      {
+        name: "_owner",
+        type: "address"
+      }
+    ],
     name: "balanceOf",
-    outputs: [{
-      name: "",
-      type: "uint256"
-    }],
+    outputs: [
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
@@ -182,10 +213,12 @@ const erc721ABI = [{
     constant: true,
     inputs: [],
     name: "owner",
-    outputs: [{
-      name: "",
-      type: "address"
-    }],
+    outputs: [
+      {
+        name: "",
+        type: "address"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
@@ -194,17 +227,20 @@ const erc721ABI = [{
     constant: true,
     inputs: [],
     name: "symbol",
-    outputs: [{
-      name: "_symbol",
-      type: "string"
-    }],
+    outputs: [
+      {
+        name: "_symbol",
+        type: "string"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
     constant: false,
-    inputs: [{
+    inputs: [
+      {
         name: "_operator",
         type: "address"
       },
@@ -221,7 +257,8 @@ const erc721ABI = [{
   },
   {
     constant: false,
-    inputs: [{
+    inputs: [
+      {
         name: "_from",
         type: "address"
       },
@@ -246,22 +283,27 @@ const erc721ABI = [{
   },
   {
     constant: true,
-    inputs: [{
-      name: "_tokenId",
-      type: "uint256"
-    }],
+    inputs: [
+      {
+        name: "_tokenId",
+        type: "uint256"
+      }
+    ],
     name: "tokenURI",
-    outputs: [{
-      name: "",
-      type: "string"
-    }],
+    outputs: [
+      {
+        name: "",
+        type: "string"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
     constant: true,
-    inputs: [{
+    inputs: [
+      {
         name: "_owner",
         type: "address"
       },
@@ -271,20 +313,24 @@ const erc721ABI = [{
       }
     ],
     name: "isApprovedForAll",
-    outputs: [{
-      name: "",
-      type: "bool"
-    }],
+    outputs: [
+      {
+        name: "",
+        type: "bool"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
     constant: false,
-    inputs: [{
-      name: "_newOwner",
-      type: "address"
-    }],
+    inputs: [
+      {
+        name: "_newOwner",
+        type: "address"
+      }
+    ],
     name: "transferOwnership",
     outputs: [],
     payable: false,
@@ -292,7 +338,8 @@ const erc721ABI = [{
     type: "function"
   },
   {
-    inputs: [{
+    inputs: [
+      {
         name: "_name",
         type: "string"
       },
@@ -307,7 +354,8 @@ const erc721ABI = [{
   },
   {
     anonymous: false,
-    inputs: [{
+    inputs: [
+      {
         indexed: true,
         name: "previousOwner",
         type: "address"
@@ -323,7 +371,8 @@ const erc721ABI = [{
   },
   {
     anonymous: false,
-    inputs: [{
+    inputs: [
+      {
         indexed: true,
         name: "_from",
         type: "address"
@@ -344,7 +393,8 @@ const erc721ABI = [{
   },
   {
     anonymous: false,
-    inputs: [{
+    inputs: [
+      {
         indexed: true,
         name: "_owner",
         type: "address"
@@ -365,7 +415,8 @@ const erc721ABI = [{
   },
   {
     anonymous: false,
-    inputs: [{
+    inputs: [
+      {
         indexed: true,
         name: "_owner",
         type: "address"
@@ -386,7 +437,8 @@ const erc721ABI = [{
   },
   {
     constant: false,
-    inputs: [{
+    inputs: [
+      {
         name: "_to",
         type: "address"
       },
@@ -407,7 +459,8 @@ const erc721ABI = [{
   },
   {
     constant: false,
-    inputs: [{
+    inputs: [
+      {
         name: "_owner",
         type: "address"
       },

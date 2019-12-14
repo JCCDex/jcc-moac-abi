@@ -1,11 +1,14 @@
-const erc20ABI = [{
+const erc20ABI = [
+  {
     constant: true,
     inputs: [],
     name: "name",
-    outputs: [{
-      name: "",
-      type: "string"
-    }],
+    outputs: [
+      {
+        name: "",
+        type: "string"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
@@ -14,10 +17,12 @@ const erc20ABI = [{
     constant: true,
     inputs: [],
     name: "totalSupply",
-    outputs: [{
-      name: "",
-      type: "uint256"
-    }],
+    outputs: [
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
@@ -26,10 +31,12 @@ const erc20ABI = [{
     constant: true,
     inputs: [],
     name: "decimals",
-    outputs: [{
-      name: "",
-      type: "uint256"
-    }],
+    outputs: [
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
@@ -38,10 +45,12 @@ const erc20ABI = [{
     constant: true,
     inputs: [],
     name: "founder",
-    outputs: [{
-      name: "",
-      type: "address"
-    }],
+    outputs: [
+      {
+        name: "",
+        type: "address"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
@@ -50,19 +59,23 @@ const erc20ABI = [{
     constant: true,
     inputs: [],
     name: "symbol",
-    outputs: [{
-      name: "",
-      type: "string"
-    }],
+    outputs: [
+      {
+        name: "",
+        type: "string"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
-    inputs: [{
-      name: "founderInput",
-      type: "address"
-    }],
+    inputs: [
+      {
+        name: "founderInput",
+        type: "address"
+      }
+    ],
     payable: false,
     stateMutability: "nonpayable",
     type: "constructor"
@@ -74,7 +87,8 @@ const erc20ABI = [{
   },
   {
     anonymous: false,
-    inputs: [{
+    inputs: [
+      {
         indexed: true,
         name: "_from",
         type: "address"
@@ -95,7 +109,8 @@ const erc20ABI = [{
   },
   {
     anonymous: false,
-    inputs: [{
+    inputs: [
+      {
         indexed: true,
         name: "_owner",
         type: "address"
@@ -116,22 +131,27 @@ const erc20ABI = [{
   },
   {
     constant: true,
-    inputs: [{
-      name: "_owner",
-      type: "address"
-    }],
+    inputs: [
+      {
+        name: "_owner",
+        type: "address"
+      }
+    ],
     name: "balanceOf",
-    outputs: [{
-      name: "balance",
-      type: "uint256"
-    }],
+    outputs: [
+      {
+        name: "balance",
+        type: "uint256"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
     constant: false,
-    inputs: [{
+    inputs: [
+      {
         name: "_spender",
         type: "address"
       },
@@ -141,17 +161,20 @@ const erc20ABI = [{
       }
     ],
     name: "approve",
-    outputs: [{
-      name: "success",
-      type: "bool"
-    }],
+    outputs: [
+      {
+        name: "success",
+        type: "bool"
+      }
+    ],
     payable: false,
     stateMutability: "nonpayable",
     type: "function"
   },
   {
     constant: true,
-    inputs: [{
+    inputs: [
+      {
         name: "_owner",
         type: "address"
       },
@@ -161,17 +184,20 @@ const erc20ABI = [{
       }
     ],
     name: "allowance",
-    outputs: [{
-      name: "remaining",
-      type: "uint256"
-    }],
+    outputs: [
+      {
+        name: "remaining",
+        type: "uint256"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
     constant: false,
-    inputs: [{
+    inputs: [
+      {
         name: "_to",
         type: "address"
       },
@@ -181,17 +207,20 @@ const erc20ABI = [{
       }
     ],
     name: "transfer",
-    outputs: [{
-      name: "success",
-      type: "bool"
-    }],
+    outputs: [
+      {
+        name: "success",
+        type: "bool"
+      }
+    ],
     payable: false,
     stateMutability: "nonpayable",
     type: "function"
   },
   {
     constant: false,
-    inputs: [{
+    inputs: [
+      {
         name: "_from",
         type: "address"
       },
@@ -205,10 +234,12 @@ const erc20ABI = [{
       }
     ],
     name: "transferFrom",
-    outputs: [{
-      name: "success",
-      type: "bool"
-    }],
+    outputs: [
+      {
+        name: "success",
+        type: "bool"
+      }
+    ],
     payable: false,
     stateMutability: "nonpayable",
     type: "function"
