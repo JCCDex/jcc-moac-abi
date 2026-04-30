@@ -1,7 +1,13 @@
 import { Interface } from "ethers";
-import { Contract } from "chain3/lib/chain3/contract";
 import isFunction = require("lodash/isFunction");
 import { IABIItem, IDecoded, IDecodedLog, ILog } from "./model";
+
+// Duck-type interface for a chain3 contract instance.
+// Avoids importing chain3 as a production dependency while preserving type safety.
+interface IChain3Contract {
+    abi: IABIItem[];
+    [method: string]: any;
+}
 
 // Global ABI registry (replaces abi-decoder)
 const _abis: IABIItem[] = [];
@@ -45,7 +51,7 @@ export default class MoacABI {
      * @type {Contract}
      * @memberof MoacABI
      */
-    private _contract: Contract;
+    private _contract: IChain3Contract;
 
     /**
      * moac abi
@@ -61,8 +67,8 @@ export default class MoacABI {
      * @param {Contract} contract moac contract instance
      * @memberof MoacABI
      */
-    constructor(contract: Contract) {
-        if (contract instanceof Contract) {
+    constructor(contract: IChain3Contract) {
+        if (contract && Array.isArray(contract.abi)) {
             this._contract = contract;
             this._abi = contract.abi;
         } else {
