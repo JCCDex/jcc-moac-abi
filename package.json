@@ -11,6 +11,7 @@
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "test": "npm run test:node",
     "test:node": "tsc && nyc --extension=.ts --reporter=lcov --reporter=html --reporter=text mocha --timeout=3000 test/*.spec.js",
+    "audit": "npm audit --omit=dev",
     "lint": "eslint src/**/*.ts",
     "watch:lint": "gulp dev",
     "compile": "./compile.sh",
@@ -19,12 +20,12 @@
   "author": "JCCDex",
   "license": "MIT",
   "dependencies": {
-    "chain3": "^0.1.23",
     "ethers": "^6.13.5",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@babel/cli": "^7.27.0",
+    "chain3": "^0.1.23",
     "@babel/core": "^7.27.0",
     "@babel/preset-env": "^7.27.0",
     "@types/lodash": "^4.17.16",
