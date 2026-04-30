@@ -30,6 +30,7 @@ export interface IDecoded {
 interface IInput {
   name: string;
   type: string;
+  indexed?: boolean;
   components?: any;
 }
 

@@ -1,9 +1,34 @@
-import abiDecoder = require("abi-decoder");
+import { Interface } from "ethers";
 import { Contract } from "chain3/lib/chain3/contract";
 import isFunction = require("lodash/isFunction");
-import abiCoder = require("web3-eth-abi");
-import { BN } from "web3-utils";
 import { IABIItem, IDecoded, IDecodedLog, ILog } from "./model";
+
+// Global ABI registry (replaces abi-decoder)
+const _abis: IABIItem[] = [];
+let _iface: Interface | null = null;
+
+function _getIface(): Interface {
+    if (!_iface) {
+        _iface = new Interface(_abis as any[]);
+    }
+    return _iface;
+}
+
+function _convertValue(value: any, type: string): any {
+    if (typeof value === "bigint") {
+        return value.toString();
+    }
+    if (type === "address") {
+        return String(value).toLowerCase();
+    }
+    return value;
+}
+
+// Topics in MOAC logs may not always be zero-padded to 32 bytes.
+// Ethers requires 32-byte hex topics, so we pad them before decoding.
+function _padTopic(topic: string): string {
+    return topic.length < 66 ? "0x" + topic.slice(2).padStart(64, "0") : topic;
+}
 
 /**
  * decoder and encoder for moac
@@ -115,14 +140,19 @@ export default class MoacABI {
      * @memberof MoacABI
      */
     public static decode(data: string): IDecoded[] {
-        const decodedData = abiDecoder.decodeMethod(data);
-        return decodedData;
+        const parsed = _getIface().parseTransaction({ data });
+        return {
+            name: parsed.name,
+            params: parsed.fragment.inputs.map((input, i) => ({
+                name: input.name,
+                value: _convertValue(parsed.args[i], input.type),
+                type: input.type,
+            })),
+        } as any;
     }
 
     /**
      * decode moac transaction logs
-     *
-     * [Reference](https://github.com/ConsenSys/abi-decoder/blob/master/index.js#L130)
      *
      * @static
      * @param {ILog[]} logs
@@ -131,83 +161,44 @@ export default class MoacABI {
      * @memberof MoacABI
      */
     public static decodeLogs(logs: ILog[]): IDecodedLog[] {
+        const iface = _getIface();
         return logs.filter((log) => log.topics.length > 0).map((logItem) => {
-            const methodID = logItem.topics[0].slice(2);
-            const method = abiDecoder.getMethodIDs()[methodID];
-            if (method) {
-                const logData = logItem.TxData;
-                const decodedParams = [];
-                let dataIndex = 0;
-                let topicsIndex = 1;
-
-                const dataTypes = [];
-                method.inputs.map((input) => {
-                    if (!input.indexed) {
-                        dataTypes.push(input.type);
-                    }
-                });
-
-                const decodedData = abiCoder.decodeParameters(dataTypes, logData.slice(2));
-                // Loop topic and data to get the params
-                method.inputs.map((param) => {
-                    const decodedP: any = {
-                        name: param.name,
-                        type: param.type,
-                    };
-
-                    if (param.indexed) {
-                        decodedP.value = logItem.topics[topicsIndex];
-                        topicsIndex++;
-                    } else {
-                        decodedP.value = decodedData[dataIndex];
-                        dataIndex++;
-                    }
-
-                    if (param.type === "address") {
-                        decodedP.value = decodedP.value.toLowerCase();
-                        // 42 because len(0x) + 40
-                        if (decodedP.value.length > 42) {
-                            const toRemove = decodedP.value.length - 42;
-                            const temp = decodedP.value.split("");
-                            temp.splice(2, toRemove);
-                            decodedP.value = temp.join("");
-                        }
-                    }
-
-                    if (param.type === "uint256" || param.type === "uint8" || param.type === "int") {
-                        decodedP.value = new BN(decodedP.value).toString(10);
-                    }
-
-                    decodedParams.push(decodedP);
-                });
-
-                return Object.assign(logItem, { events: decodedParams, name: method.name });
+            const paddedTopics = logItem.topics.map(_padTopic);
+            const parsed = iface.parseLog({ topics: paddedTopics, data: logItem.TxData });
+            if (parsed) {
+                const decodedParams = parsed.fragment.inputs.map((input, i) => ({
+                    name: input.name,
+                    type: input.type,
+                    value: _convertValue(parsed.args[i], input.type),
+                }));
+                return Object.assign(logItem, { events: decodedParams, name: parsed.name });
             }
             return logItem;
         });
     }
 
     /**
-     * add abi to abiDecoder
+     * add abi to registry
      *
      * @static
      * @param {IABIItem[]} abi
      * @memberof MoacABI
      */
     public static addABI(abi: IABIItem[]) {
-        abiDecoder.addABI(abi);
+        _abis.push(...abi);
+        _iface = null;
     }
 
     /**
-     * remove ABIs and methodIDs from abiDecoder
+     * remove all ABIs from registry
      *
      * @static
      * @param {IABIItem[]} abi
      * @memberof MoacABI
      */
-    public static removeABI(abi: IABIItem[]) {
-        abiDecoder.getABIs().length = 0;
-        abiDecoder.removeABI(abi);
+    public static removeABI(_abi: IABIItem[]) {
+        _abis.length = 0;
+        _iface = null;
     }
 }
 
